@@ -1,5 +1,9 @@
 Flask
-Flask-Login
-Flask-wtf
 Flask-SQLAlchemy
+Flask-WTF
+WTForms
+Flask-Bcrypt
+Flask-Login
+Werkzeug
 gunicorn
+
