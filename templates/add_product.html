@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Construction Samadhan</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="stylesheet" href="/static/style1.css" />
+    </style>
+  </head>
+  <body>
+     <!-- Navbar -->
+     <nav class="navbar">
+      <div class="logo">
+        <img
+          src="{{ url_for('static', filename='images/logo.avif') }}"
+          alt="Logo"
+        />
+      </div>
+      <div class="navLinks">
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('shop') }}">Shop</a></li>
+          <li><a href="#">About Us</a></li>
+          {% if current_user.is_authenticated and
+          current_user.__class__.__name__ == 'Supplier' %}
+          <li><a href="{{url_for('supplier_orders')}}">Supplier Orders</a>
+          <li>
+            <a href="{{ url_for('add_product') }}">Add Product</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="nav-icons">
+        {% if current_user.is_authenticated and current_user.__class__.__name__
+        == 'User' %}
+        <input type="text" placeholder="Search for item" id="searchInput" />
+        <button class="search-btn" onclick="searchProduct()">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        <a href="{{ url_for('cart') }}" class="cart-btn">
+          <span class="material-symbols-outlined">shopping_cart</span>
+        </a>
+        {% endif %}
+        <div class="user-dropdown">
+          {% if current_user.is_authenticated %}
+          <button class="dropdown-btn">
+            <span class="material-symbols-outlined">account_circle</span>
+            {{ current_user.userName }}
+          </button>
+          <ul class="dropdown-menu">
+            {% if current_user.is_authenticated and
+                current_user.__class__.__name__ == 'User' %}
+            <li><a href="{{url_for('orders')}}">Orders</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          </ul>
+          {% else %}
+          <button class="dropdown-btn">
+            <span class="material-symbols-outlined">person</span>
+            <span class="material-symbols-outlined">expand_more</span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="{{ url_for('login') }}">Sign In</a></li>
+            <li>
+              <a href="{{ url_for('supplier_login') }}">Supplier Login</a>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <div class="add_product_container">
+      <h2 class="add_text">Add New Product</h2>
+      <div class="card_shadow">
+        <form method="POST" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+
+          <div class="add_product">
+            <label class="form-label">{{ form.name.label }}</label>
+            {{ form.name(class="form-control", placeholder="Enter product name")
+            }}
+          </div>
+
+          <div class="add_product">
+            <label class="form-label">{{ form.price.label }}</label>
+            {{ form.price(class="form-control", placeholder="Enter product price") }}
+          </div>
+
+          <div class="add_product">
+            <label class="form-label">{{ form.description.label }}</label>
+            {{ form.description(class="form-control", placeholder="Enter product description") }}
+          </div>
+
+          <div class="add_product">
+            <label class="form-label">{{ form.quantity.label }}</label>
+            {{ form.quantity(class="form-control", placeholder="Enter quantity available") }}
+          </div>
+
+          <div class="add_product">
+            <label class="form-label">{{ form.image.label }}</label>
+            {{ form.image(class="form-control") }}
+          </div>
+
+          <button type="submit" class="add_product_btn">Add Product</button>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="/static/index.js"></script>
+</html>

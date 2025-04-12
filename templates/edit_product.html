@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Product</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='images/logo.avif') }}"
+    />
+    <link rel="stylesheet" href="/static/style1.css" />
+    <style>
+      .edit-product-container {
+        max-width: 500px;
+        margin: 250px auto;
+        margin-top: 100px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .edit-product-container h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .save-btn {
+        width: 100%;
+        padding: 10px;
+        background: #28a745;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .save-btn:hover {
+        background: #218838;
+      }
+
+      .cancel-btn {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        color: #ff5733;
+        font-size: 16px;
+        text-decoration: none;
+      }
+
+      .cancel-btn:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+     <!-- Navbar -->
+     <nav class="navbar">
+        <div class="logo">
+          <img
+            src="{{ url_for('static', filename='images/logo.avif') }}"
+            alt="Logo"
+          />
+        </div>
+        <div class="navLinks">
+          <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('shop') }}">Shop</a></li>
+            <li><a href="#">About Us</a></li>
+            {% if current_user.is_authenticated and
+            current_user.__class__.__name__ == 'Supplier' %}
+            <li><a href="{{url_for('supplier_orders')}}">Supplier Orders</a>
+            <li>
+              <a href="{{ url_for('add_product') }}">Add Product</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+        <div class="nav-icons">
+          {% if current_user.is_authenticated and current_user.__class__.__name__
+          == 'User' %}
+          <input type="text" placeholder="Search for item" id="searchInput" />
+          <button class="search-btn" onclick="searchProduct()">
+            <span class="material-symbols-outlined">search</span>
+          </button>
+          <a href="{{ url_for('cart') }}" class="cart-btn">
+            <span class="material-symbols-outlined">shopping_cart</span>
+          </a>
+          {% endif %}
+          <div class="user-dropdown">
+            {% if current_user.is_authenticated %}
+            <button class="dropdown-btn">
+              <span class="material-symbols-outlined">account_circle</span>
+              {{ current_user.userName }}
+            </button>
+            <ul class="dropdown-menu">
+              {% if current_user.is_authenticated and
+                  current_user.__class__.__name__ == 'User' %}
+              <li><a href="{{url_for('orders')}}">Orders</a></li>
+              {% endif %}
+              <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+            {% else %}
+            <button class="dropdown-btn">
+              <span class="material-symbols-outlined">person</span>
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="{{ url_for('login') }}">Sign In</a></li>
+              <li>
+                <a href="{{ url_for('supplier_login') }}">Supplier Login</a>
+              </li>
+            </ul>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+<!-- Edit Product Code -->
+    <div class="edit-product-container">
+      <h2>Edit Product</h2>
+      <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <label for="name">Product Name</label>
+        {{ form.name(class="form-input", placeholder="Enter product name") }}
+
+        <label for="price">Price ($)</label>
+        {{ form.price(class="form-input", placeholder="Enter product price") }}
+
+        <label for="description">Description</label>
+        {{ form.description(class="form-input", placeholder="Enter product
+        description") }}
+
+        <label for="quantity">Quantity</label>
+        {{ form.quantity(class="form-input", placeholder="Enter quantity
+        available") }}
+
+        <label for="image">Product Image</label>
+        {{ form.image(class="form-input") }}
+
+        <button type="submit" class="save-btn">Save Changes</button>
+        <a href="{{ url_for('shop') }}" class="cancel-btn">Cancel</a>
+      </form>
+    </div>
+  </body>
+  
+  <script>
+// Drop Down
+document.addEventListener("DOMContentLoaded", function () {
+    let dropdownBtn = document.querySelector(".dropdown-btn");
+    let dropdownMenu = document.querySelector(".dropdown-menu");
+
+    if (dropdownBtn && dropdownMenu) {
+        dropdownBtn.addEventListener("click", function (event) {
+            dropdownMenu.classList.toggle("show-menu");
+            event.stopPropagation(); // Prevent closing when clicking button
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+            if (!dropdownBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove("show-menu");
+            }
+        });
+    }
+});
+  </script>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Samadhan</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/static/style1.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- ✅ SweetAlert for pop-ups -->
+
+    <style>
+        input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-btn span {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.avif') }}" alt="Logo"> 
+        </div>
+        <div class="navLinks">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('shop') }}">Shop</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact Us</a></li>
+                {% if current_user.is_authenticated and current_user.__class__.__name__ == 'Supplier' %}
+                    <li><a href="{{ url_for('add_product') }}" class="add-product-btn">Add Product</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="nav-icons">
+            {% if current_user.is_authenticated and current_user.__class__.__name__ == 'User' %}
+                <input type="text" placeholder="Search for item" id="searchInput">
+                <button class="search-btn">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <a href="{{ url_for('cart') }}" class="cart-btn">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                </a>
+            {% endif %}
+            <div class="user-dropdown">
+                {% if current_user.is_authenticated %}
+                    <button class="dropdown-btn">
+                        <span class="material-symbols-outlined">account_circle</span>
+                        {{ current_user.userName }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Orders</a></li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    </ul>
+                {% else %}
+                    <button class="dropdown-btn">
+                        <span class="material-symbols-outlined">person</span> 
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('login') }}">Sign In</a></li>
+                        <li><a href="{{ url_for('supplier_login') }}">Supplier Login</a></li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+<!-- signup page -->
+    <div class="container2">
+        <div class="signup-container">
+            <h2 class="text-center mb-4">Sign Up</h2>
+            
+            <form method="POST" class="signupForm">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.userName.label(class="form-label") }}
+                    {{ form.userName(class="form-control", placeholder="Enter your Username") }}
+                </div>
+                    <div>
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control", placeholder="Enter your name") }}
+                    </div>
+                    <div>
+                        {{ form.mobileNumber.label(class="form-label") }}
+                        {{ form.mobileNumber(class="form-control", placeholder="Enter your mobile number") }}
+                    </div>
+                    <div>
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control", placeholder="Enter your email") }}
+                    </div>
+                    <div>
+                        {{ form.pincode.label(class="form-label") }}
+                        {{ form.pincode(class="form-control", id="pincode", placeholder="Enter Pincode") }}
+                    </div>
+                    <div>
+                        {{ form.nearby_landmark.label(class="form-label") }}
+                        {{ form.nearby_landmark(class="form-control", id="landmark", placeholder="Enter nearby landmark") }}
+                    </div>
+                    <div>
+                        {{ form.village.label(class="form-label") }}
+                        {{ form.village(class="form-control", id="village", placeholder="Enter village name") }}
+                    </div>
+                    <div>
+                        {{ form.district.label(class="form-label") }}
+                        {{ form.district(class="form-control", id="district", placeholder="Enter district name") }}
+                    </div>
+                    <div>
+                        {{ form.state.label(class="form-label") }}
+                        {{ form.state(class="form-control", id="state", placeholder="Enter state name") }}
+                    </div>
+
+
+                    <div>
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control", placeholder="Create a password") }}
+                    </div>
+                    <div>
+                        {{ form.confirm_password.label(class="form-label") }}
+                        {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+                    </div>
+                    {{ form.submit(class="submitBtn") }}
+               
+            </form>
+        </div>
+    </div>
+    <script src="/static/index.js">
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- ✅ SweetAlert for pop-ups -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let signupForm = document.querySelector(".signupForm");
+        if (!signupForm) return;
+    
+        signupForm.addEventListener("submit", function (event) {
+            event.preventDefault();  
+    
+            let formData = new FormData(this);
+    
+            fetch("/signup", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())  
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: "Signup Successful!",
+                        text: "Your account has been created successfully.",
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = data.redirect_url;  
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Signup Failed!",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "Try Again"
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            });
+        });
+    });
+</script>    
+</body>
+</html>
